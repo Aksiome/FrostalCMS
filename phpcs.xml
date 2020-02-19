@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="Frostal coding standard">
+    <description>Frostal coding standard</description>
+    <arg value="p"/>
+    <arg name="colors"/>
+    <rule ref="PSR12"/>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <file>src</file>
+    <file>tests</file>
+</ruleset>
