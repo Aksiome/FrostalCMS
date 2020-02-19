@@ -21,12 +21,5 @@
         "phpunit/phpunit": "^8.5",
         "symfony/var-dumper": "^5.0",
         "squizlabs/php_codesniffer": "^3.5"
-    },
-    "scripts": {
-        "test": [
-            "phpunit --coverage-text",
-            "phpcs"
-        ],
-        "coverage": "phpunit --coverage-html=coverage"
     }
 }
