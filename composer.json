@@ -1,8 +1,7 @@
 {
     "name": "aksiome/frostal",
-    "description": "Frostal is a php application between a cms and a framework",
+    "description": "Frostal is a content first CMS",
     "type": "project",
-    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Frostal\\": "src"
@@ -22,5 +21,12 @@
         "phpunit/phpunit": "^8.5",
         "symfony/var-dumper": "^5.0",
         "squizlabs/php_codesniffer": "^3.5"
+    },
+    "scripts": {
+        "test": [
+            "phpunit --coverage-text",
+            "phpcs"
+        ],
+        "coverage": "phpunit --coverage-html=coverage"
     }
 }

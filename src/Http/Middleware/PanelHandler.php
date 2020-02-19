@@ -13,5 +13,6 @@ class PanelHandler implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        return $this->responseFactory->createResponse();
     }
 }
