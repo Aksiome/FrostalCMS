@@ -37,28 +37,12 @@ class Application
      */
     public function __construct(array $config = [])
     {
-        self::$config = array_merge([
-            "debug" => false,
-            "trailingSlash" => false,
-            "panel" => "admin",
-            "auth.trials" => 6,
-            "auth.timeout" => 3600,
-            "templates.path" => null,
-            "schemes.path" => null,
-            "users.path" => null,
-            "media.path" => null,
-            "pages.path" => null,
-            "pages.index" => "home",
-            "session.durationNormal" => 7200,
-            "session.durationLong" => 1209600,
-            "session.timeout" => 1800,
-            "session.cookieName" => "fs",
-        ], $config);
+        self::$config = array_merge(require "config.php", $config);
         $this->httpFactory = new Psr17Factory();
         $this->requestHandler = new RequestHandler();
         $this->requestHandler
             ->pipe(new Middleware\ExceptionHandler($this->httpFactory), -100)
-            ->pipe(new Middleware\TrailingSlash($this->httpFactory), -50);
+            ->pipe(new Middleware\TrailingSlash($this->httpFactory, self::config("trailingSlash")), -50);
     }
 
     /**
@@ -70,19 +54,11 @@ class Application
     }
 
     /**
-     * Get the configuration
-     *
-     * This method returns the current configuration.
-     *
-     * @param string|null $key
-     * @return string|mixed[]|null
+     * @return Psr17Factory
      */
-    public static function config(?string $key = null)
+    public function getHttpFactory(): Psr17Factory
     {
-        if (is_null($key)) {
-            return self::$config;
-        }
-        return self::$config[$key];
+        return $this->httpFactory;
     }
 
     /**
@@ -110,5 +86,21 @@ class Application
                 ->pipe(new Middleware\PanelHandler(), 100);
         $response = $this->requestHandler->run($request);
         \Http\Response\send($response);
+    }
+
+    /**
+     * Get the configuration
+     *
+     * This method returns the current configuration.
+     *
+     * @param string|null $key
+     * @return mixed
+     */
+    public static function config(?string $key = null)
+    {
+        if (is_null($key)) {
+            return self::$config;
+        }
+        return self::$config[$key];
     }
 }

@@ -20,7 +20,7 @@ class TrailingSlash implements MiddlewareInterface
     /**
      * @param ResponseFactoryInterface $responseFactory
      */
-    public function __construct(ResponseFactoryInterface $responseFactory)
+    public function __construct(ResponseFactoryInterface $responseFactory, bool $trailingSlash)
     {
         $this->responseFactory = $responseFactory;
     }

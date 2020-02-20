@@ -8,9 +8,14 @@ use Frostal\Application;
 use Frostal\Http\Middleware\PanelHandler;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UploadedFileFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -23,6 +28,17 @@ class ApplicationTest extends TestCase
         ]);
         $this->assertEquals("bar", Application::config("foo"));
         $this->assertEquals("bar", Application::config()["foo"]);
+    }
+
+    public function testHttpFactory()
+    {
+        $app = new Application();
+        $this->assertInstanceOf(ResponseFactoryInterface::class, $app->getHttpFactory());
+        $this->assertInstanceOf(ServerRequestFactoryInterface::class, $app->getHttpFactory());
+        $this->assertInstanceOf(RequestFactoryInterface::class, $app->getHttpFactory());
+        $this->assertInstanceOf(StreamFactoryInterface::class, $app->getHttpFactory());
+        $this->assertInstanceOf(UploadedFileFactoryInterface::class, $app->getHttpFactory());
+        $this->assertInstanceOf(UriFactoryInterface::class, $app->getHttpFactory());
     }
 
     /**
