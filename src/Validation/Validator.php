@@ -57,7 +57,7 @@ class Validator
     {
         $validatedData = [];
         foreach ($parsedRules as $field => $rules) {
-            if (is_string($rules)) {
+            if (!is_array($rules)) {
                 throw new RuleParsingException();
             }
             foreach ($rules as $rule => $params) {
@@ -87,7 +87,7 @@ class Validator
         $parsedRules = [];
         foreach ($rules as $field => $fieldRules) {
             $parsedRules[$field] = [];
-            if (is_string($fieldRules)) {
+            if (!is_array($fieldRules)) {
                 throw new RuleParsingException();
             }
             foreach ($fieldRules as $key => $rule) {

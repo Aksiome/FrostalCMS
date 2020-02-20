@@ -18,15 +18,43 @@ class TrailingSlash implements MiddlewareInterface
     private $responseFactory;
 
     /**
-     * @param ResponseFactoryInterface $responseFactory
+     * @var boolean
      */
-    public function __construct(ResponseFactoryInterface $responseFactory, bool $trailingSlash)
+    private $trailingSlash;
+
+    /**
+     * @param ResponseFactoryInterface $responseFactory
+     * @param boolean $trailingSlash
+     */
+    public function __construct(ResponseFactoryInterface $responseFactory, bool $trailingSlash = false)
     {
         $this->responseFactory = $responseFactory;
+        $this->trailingSlash = $trailingSlash;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return $this->responseFactory->createResponse();
+        $path = $request->getUri()->getPath();
+        $redirectPath = $this->normalize($path);
+        if ($path !== $redirectPath) {
+            return $this->responseFactory->createResponse(301)
+                ->withHeader("Location", $redirectPath);
+        }
+        return $handler->handle($request);
+    }
+
+    /**
+     * Normalize the given path
+     *
+     * @param string $path
+     * @return string
+     */
+    private function normalize(string $path): string
+    {
+        $path = rtrim($path, "/");
+        if ($path === "") {
+            return "/";
+        }
+        return $this->trailingSlash ? $path . "/" : $path;
     }
 }
