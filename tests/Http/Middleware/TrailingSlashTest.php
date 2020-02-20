@@ -21,7 +21,7 @@ class TrailingSlashTest extends TestCase
 
     public function setUp(): void
     {
-        $this->httpFactory = new Psr17Factory;
+        $this->httpFactory = new Psr17Factory();
     }
 
     public function testWithTrailingSlash()
@@ -46,7 +46,8 @@ class TrailingSlashTest extends TestCase
         $this->checkPaths(new TrailingSlash($this->httpFactory, false), $paths);
     }
 
-    private function checkPaths(TrailingSlash $middleware, array $paths) {
+    private function checkPaths(TrailingSlash $middleware, array $paths)
+    {
         foreach ($paths as $providedPath => $expectedPath) {
             $request = $this->httpFactory->createServerRequest("GET", $providedPath);
             $response = $middleware->process($request, $this->middlewareThatRespondRequestedPath($this->httpFactory));
@@ -56,11 +57,13 @@ class TrailingSlashTest extends TestCase
 
     private function middlewareThatRespondRequestedPath(ResponseFactoryInterface $responseFactory)
     {
-        return new class($responseFactory) implements RequestHandlerInterface {
-            public function __construct(ResponseFactoryInterface $responseFactory) {
+        return new class ($responseFactory) implements RequestHandlerInterface {
+            public function __construct(ResponseFactoryInterface $responseFactory)
+            {
                 $this->responseFactory = $responseFactory;
             }
-            public function handle(ServerRequestInterface $request): ResponseInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
                 $response = $this->responseFactory->createResponse();
                 $response->getBody()->write($request->getUri()->getPath());
                 return $response;
