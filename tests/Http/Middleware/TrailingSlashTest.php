@@ -51,7 +51,9 @@ class TrailingSlashTest extends TestCase
         foreach ($paths as $providedPath => $expectedPath) {
             $request = $this->httpFactory->createServerRequest("GET", $providedPath);
             $response = $middleware->process($request, $this->middlewareThatRespondRequestedPath($this->httpFactory));
-            $this->assertEquals($expectedPath, $response->getHeaderLine("Location") ?: (string) $response->getBody());
+            $response->getStatusCode() === 301
+                ? $this->assertEquals($expectedPath, $response->getHeaderLine("Location"))
+                : $this->assertEquals($expectedPath, (string) $response->getBody());
         }
     }
 
