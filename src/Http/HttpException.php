@@ -6,13 +6,24 @@ namespace Frostal\Http;
 
 use Exception;
 use RuntimeException;
+use Throwable;
 
 class HttpException extends Exception
 {
     /**
+     * @var string[][string]
+     */
+    protected $errors;
+
+    /**
+     * @var string
+     */
+    protected $description;
+
+    /**
      * @var string[]
      */
-    private static $phrases = [
+    protected static $phrases = [
         /* CLIENT ERRORS */
         400 => 'Bad Request',
         401 => 'Unauthorized',
@@ -65,24 +76,45 @@ class HttpException extends Exception
      *
      * @param integer $code
      */
-    public function __construct(int $code = 500)
+    public function __construct(int $code = 500, ?Throwable $previous = null)
     {
         if (!isset(self::$phrases[$code])) {
-            throw new RuntimeException("Http error not valid ({$code})");
+            throw new RuntimeException("Http error code not valid ({$code})");
         }
-        parent::__construct(self::$phrases[$code], $code);
+        parent::__construct(self::$phrases[$code], $code, $previous);
     }
 
     /**
-     * Get the code and the message of the exception
+     * Append a new message to the error
      *
-     * @return string[]
+     * @param string $name
+     * @param string $message
+     * @return self
      */
-    public function getParams(): array
+    public function addErrorMessage(string $name, string $message): self
     {
-        return [
-            "code" => $this->getCode(),
-            "message" => $this->getMessage()
-        ];
+        $this->errors[$name][] = $message;
+        return $this;
+    }
+
+    /**
+     * Set the messages of an error
+     *
+     * @param string $name
+     * @param array $errors
+     * @return self
+     */
+    public function setErrorMessages(string $name, array $errors): self
+    {
+        $this->errors[$name] = $errors;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors ?? [];
     }
 }

@@ -50,14 +50,14 @@ class TrailingSlashTest extends TestCase
     {
         foreach ($paths as $providedPath => $expectedPath) {
             $request = $this->httpFactory->createServerRequest("GET", $providedPath);
-            $response = $middleware->process($request, $this->middlewareThatRespondRequestedPath($this->httpFactory));
+            $response = $middleware->process($request, $this->handlerThatRespondRequestedPath($this->httpFactory));
             $response->getStatusCode() === 301
                 ? $this->assertEquals($expectedPath, $response->getHeaderLine("Location"))
                 : $this->assertEquals($expectedPath, (string) $response->getBody());
         }
     }
 
-    private function middlewareThatRespondRequestedPath(ResponseFactoryInterface $responseFactory)
+    private function handlerThatRespondRequestedPath(ResponseFactoryInterface $responseFactory)
     {
         return new class ($responseFactory) implements RequestHandlerInterface {
             public function __construct(ResponseFactoryInterface $responseFactory)

@@ -41,7 +41,7 @@ class Application
         $this->httpFactory = new Psr17Factory();
         $this->requestHandler = new RequestHandler();
         $this->requestHandler
-            ->pipe(new Middleware\ExceptionHandler($this->httpFactory), -100)
+            ->pipe(new Middleware\ErrorHandler($this->httpFactory, self::config("debug")), -100)
             ->pipe(new Middleware\TrailingSlash($this->httpFactory, self::config("trailingSlash")), -50);
     }
 

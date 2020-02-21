@@ -21,12 +21,11 @@ class HttpExceptionTest extends TestCase
         throw new HttpException(0);
     }
 
-    public function testParams()
+    public function testErrors()
     {
-        $exception = new HttpException(404);
-        $this->assertEquals([
-            "code" => 404,
-            "message" => "Not Found"
-        ], $exception->getParams());
+        $exception = new HttpException(422);
+        $exception->setErrorMessages("foo", ["bar"]);
+        $exception->addErrorMessage("foo", "baz");
+        $this->assertEquals(["foo" => ["bar", "baz"]], $exception->getErrors());
     }
 }
